@@ -4,6 +4,9 @@ public class ExpoOutPut {
     private int numExpo;
     private String nameExpo;
 
+    public ExpoOutPut() {
+    }
+
     public ExpoOutPut(int numExpo) throws WrongArgumentException {
         if(numExpo <=0) throw new WrongArgumentException("El número de exposición no puede ser menor o igual que 0");
         this.numExpo = numExpo;
@@ -24,5 +27,13 @@ public class ExpoOutPut {
 
     public void setNumExpo(int numExpo) {
         this.numExpo = numExpo;
+    }
+
+    public String getNameExpo() {
+        return nameExpo;
+    }
+
+    public void setNameExpo(String nameExpo) {
+        this.nameExpo = nameExpo;
     }
 }

@@ -6,6 +6,7 @@ public class CarOutPut {
     private String modelo;
     private int year;
 
+
     public CarOutPut(String matricula, String marca, String modelo, int year) throws EmptyFieldException, WrongArgumentException {
         if(matricula == null || matricula.isEmpty()) throw new EmptyFieldException("La matrícula no puede estar vacía");
         if(matricula.trim().length()<1 && matricula.length() >7) throw new WrongArgumentException("La matrícula debe tener cuatro números y tres letras mayúsculas");
@@ -34,6 +35,7 @@ public class CarOutPut {
         if(marca == null || marca.trim().length() <1) throw new EmptyFieldException("La marca no puede estar vacía");
         this.marca = marca;
     }
+
 
     public String getMatricula() {
         return matricula;

@@ -13,13 +13,11 @@ public class CarService {
     public void addCar(CarInput carInput) throws AlreadyExistsException {
 
         for (Coche coche : coches) {
-            if (coche.getMatricula().equals(carInput)) {
+            if (coche.getMatricula().equals(carInput.getMatricula())) {
                 throw new AlreadyExistsException("La matrícula ya existe");
-
             }
-
         }
-        Coche coche = new Coche(carInput.getMatricula(), "q", carInput.getModelo(), 2000);
+        Coche coche = new Coche(carInput.getMatricula(), "Citroen", carInput.getModelo(), 2000);
         coches.add(coche);
     }
 
@@ -31,20 +29,24 @@ public class CarService {
         return cars;
     }
 
-    public CarOutPut updateCar(String marca, int year, CarUpdate car) throws WrongArgumentException, EmptyFieldException, CarNotExistsException {
+    public CarOutPut updateCar(String matricula, CarUpdate car) throws WrongArgumentException, EmptyFieldException, CarNotExistsException {
         for (Coche coche : coches) {
-            if (coche.getMarca().equals(marca) && coche.getYear() == year) {
-                car.setMarca("Kia");
-                car.setYear(2000);
-                    return new CarOutPut(coche.getMatricula(), car.getMarca(), coche.getModelo(), car.getYear());
+            if (coche.getMatricula().equals(matricula)) {
+                if (car.getMarca() != null) {
+                    coche.setMarca(car.getMarca());
                 }
-            throw new CarNotExistsException("El coche no existe");
+                if (car.getYear() != 0) {
+                    coche.setYear(car.getYear());
+                }
+                return new CarOutPut(coche.getMatricula(), coche.getMarca(), coche.getModelo(), coche.getYear());
             }
+        }
         throw new CarNotExistsException("El coche no existe");
     }
+
     public CarOutPut getCoche(String matricula) throws CarNotExistsException, WrongArgumentException, EmptyFieldException {
-        for (Coche coche : coches){
-            if(coche.getMatricula().equals(matricula)){
+        for (Coche coche : coches) {
+            if (coche.getMatricula().equals(matricula)) {
                 return new CarOutPut(matricula);
             }
         }

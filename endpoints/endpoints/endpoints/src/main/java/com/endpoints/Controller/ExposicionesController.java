@@ -1,7 +1,5 @@
 package com.endpoints.Controller;
 
-import com.endpoints.Domain.Coche;
-import com.endpoints.Domain.Exposicion;
 import com.endpoints.Service.CarNotExistsException;
 import com.endpoints.Service.ExpoService;
 import com.endpoints.Service.NumExpoNotExistsException;
@@ -23,7 +21,6 @@ public class ExposicionesController {
         try {
             return ResponseEntity.ok(expoService.getExpo());
         } catch (WrongArgumentException e) {
-            System.out.println(e.getMessage());
             return ResponseEntity.badRequest().build();
         }
     }
@@ -37,20 +34,26 @@ public class ExposicionesController {
         }
     }
 
-    @GetMapping("exposiciones/{posicion}")
-    public ResponseEntity<ExpoOutPut> buscarExpo(@PathVariable int numExpo, String name, @RequestBody ExpoUpdate expo) {
+    @GetMapping("exposiciones/{numExpo}")
+    public ResponseEntity<ExpoOutPut> buscarExpo(@PathVariable int numExpo){
         try {
-            return ResponseEntity.ok(expoService.updateExpo(name, expo));
-        } catch (CarNotExistsException | EmptyFieldException | WrongArgumentException e) {
-            return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).build();
+            ExpoOutPut expo = expoService.getExposicion(numExpo);
+            return ResponseEntity.ok(expo);
+        } catch (NumExpoNotExistsException e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.notFound().build();
+        } catch (WrongArgumentException e){
+            System.out.println(e.getMessage());
+            return ResponseEntity.badRequest().build();
         }
     }
 
     @PutMapping("/exposiciones/{numExpo}")
-    public ResponseEntity<ExpoOutPut> updateExpo(@PathVariable String name, @RequestBody ExpoUpdate expo) {
+    public ResponseEntity<ExpoOutPut> updateExpo(@PathVariable int numExpo, @RequestBody ExpoUpdate expo) {
         try {
-            return ResponseEntity.ok(expoService.updateExpo(name, expo));
+            return ResponseEntity.ok(expoService.updateExpo(numExpo, expo));
         } catch (CarNotExistsException | EmptyFieldException | WrongArgumentException e) {
+            System.out.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).build();
         }
     }

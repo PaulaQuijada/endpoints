@@ -1,6 +1,5 @@
 package com.endpoints.Controller;
 
-import com.endpoints.Domain.Coche;
 import com.endpoints.Service.CarNotExistsException;
 import com.endpoints.Service.CarService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,18 +34,20 @@ public class CochesController {
     }
 
     @PutMapping("/coches/{matricula}")
-    public ResponseEntity<CarOutPut> updateCar(@PathVariable String marca, int year, @RequestBody CarUpdate car) {
+    public ResponseEntity<CarOutPut> updateCar(@PathVariable String matricula, @RequestBody CarUpdate car) {
         try {
-            return ResponseEntity.ok(carService.updateCar(marca, year, car));
+            return ResponseEntity.ok(carService.updateCar(matricula, car));
         } catch (CarNotExistsException | EmptyFieldException | WrongArgumentException e) {
+            System.out.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).build();
         }
     }
 
     @GetMapping("/coches/{matricula}")
-    public ResponseEntity<CarOutPut> buscarCoche(@PathVariable String matricula) {
+    public ResponseEntity<String> buscarCoche(@PathVariable String matricula) {
         try {
-            return ResponseEntity.ok(carService.getCoche(matricula));
+            CarOutPut coche = carService.getCoche(matricula);
+            return ResponseEntity.ok(coche.getMatricula());
         } catch (CarNotExistsException | WrongArgumentException | EmptyFieldException e) {
             System.out.println(e.getMessage());
             return ResponseEntity.notFound().build();
