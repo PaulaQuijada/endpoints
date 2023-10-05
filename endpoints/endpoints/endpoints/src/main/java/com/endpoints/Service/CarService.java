@@ -11,43 +11,35 @@ public class CarService {
     private ArrayList<Coche> coches = new ArrayList<>();
 
     public void addCar(CarInput carInput) throws AlreadyExistsException {
-
         for (Coche coche : coches) {
             if (coche.getMatricula().equals(carInput.getMatricula())) {
                 throw new AlreadyExistsException("La matrícula ya existe");
             }
         }
-        Coche coche = new Coche(carInput.getMatricula(), "Citroen", carInput.getModelo(), 2000);
+        Coche coche = new Coche(carInput.getMatricula(), carInput.getModelo());
         coches.add(coche);
     }
 
-    public ArrayList<CarOutPut> getCars() throws WrongArgumentException, EmptyFieldException {
-        ArrayList<CarOutPut> cars = new ArrayList<>();
-        for (Coche coche : coches) {
-            cars.add(new CarOutPut(coche.getMatricula(), coche.getMarca(), coche.getModelo(), coche.getYear()));
-        }
-        return cars;
+    public ArrayList<Coche> getCars() throws WrongArgumentException, EmptyFieldException {
+        return coches;
     }
 
-    public CarOutPut updateCar(String matricula, CarUpdate car) throws WrongArgumentException, EmptyFieldException, CarNotExistsException {
+    public void updateCar(String matricula, CarUpdate car) throws WrongArgumentException, EmptyFieldException, CarNotExistsException {
         for (Coche coche : coches) {
             if (coche.getMatricula().equals(matricula)) {
-                if (car.getMarca() != null) {
-                    coche.setMarca(car.getMarca());
-                }
-                if (car.getYear() != 0) {
-                    coche.setYear(car.getYear());
-                }
-                return new CarOutPut(coche.getMatricula(), coche.getMarca(), coche.getModelo(), coche.getYear());
+                coche.setMarca(car.getMarca());
+                coche.setYear(car.getYear());
+                break;
             }
+            if(coches.indexOf(coche)== coches.size()-1) throw new CarNotExistsException("El coche no existe");
         }
-        throw new CarNotExistsException("El coche no existe");
     }
 
-    public CarOutPut getCoche(String matricula) throws CarNotExistsException, WrongArgumentException, EmptyFieldException {
+
+    public CarOutPutMatricula getCoche(String matricula) throws CarNotExistsException, WrongArgumentException, EmptyFieldException {
         for (Coche coche : coches) {
             if (coche.getMatricula().equals(matricula)) {
-                return new CarOutPut(matricula);
+                return new CarOutPutMatricula(matricula);
             }
         }
         throw new CarNotExistsException("El coche no existe");

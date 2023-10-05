@@ -10,13 +10,15 @@ public class Coche {
 
     public Coche(String matricula, String marca, String modelo, int year) {
         this.matricula = matricula;
-        this.marca = marca;
+        if (marca == null) this.marca = "no especificada";
+        else this.marca = marca;
         this.modelo = modelo;
         this.year = year;
     }
 
     public Coche(String matricula, String modelo) {
         this.matricula = matricula;
+        if (marca == null) this.marca = "no especificada";
         this.modelo = modelo;
     }
 

@@ -7,17 +7,12 @@ import java.util.ArrayList;
 public class Exposicion {
     private int numExpo;
     private String nameExpo;
-    private ArrayList<CarInput> cochesExpo;
+    private ArrayList<Coche> cochesExpo;
 
     public Exposicion(int numExpo, String nameExpo) {
         this.numExpo = numExpo;
         this.nameExpo = nameExpo;
-    }
-
-    public Exposicion(int numExpo, String nameExpo, ArrayList<CarInput> cochesExpo) {
-        this.numExpo = numExpo;
-        this.nameExpo = nameExpo;
-        this.cochesExpo = cochesExpo;
+        this.cochesExpo = new ArrayList<>();
     }
 
     public int getNumExpo() {
@@ -36,11 +31,14 @@ public class Exposicion {
         this.nameExpo = nameExpo;
     }
 
-    public ArrayList<CarInput> getCochesExpo() {
+    public ArrayList<Coche> getCochesExpo() {
         return cochesExpo;
     }
 
-    public void setCochesExpo(ArrayList<CarInput> cochesExpo) {
+    public void setCochesExpo(ArrayList<Coche> cochesExpo) {
         this.cochesExpo = cochesExpo;
+    }
+    public void addCoche(Coche coche){
+        this.cochesExpo.add(coche);
     }
 }

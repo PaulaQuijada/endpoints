@@ -1,5 +1,6 @@
 package com.endpoints.Controller;
 
+import com.endpoints.Domain.Exposicion;
 import com.endpoints.Service.CarNotExistsException;
 import com.endpoints.Service.ExpoService;
 import com.endpoints.Service.NumExpoNotExistsException;
@@ -18,26 +19,30 @@ public class ExposicionesController {
 
     @GetMapping("/exposiciones")
     public ResponseEntity<ArrayList<ExpoOutPut>> getExpo() {
-        try {
-            return ResponseEntity.ok(expoService.getExpo());
-        } catch (WrongArgumentException e) {
+       try{
+           return ResponseEntity.ok(expoService.getExpo());
+        }
+        catch (WrongArgumentException e){
+            System.out.println(e.getMessage());
             return ResponseEntity.badRequest().build();
         }
     }
 
     @PostMapping("/exposiciones")
-    public void addExpo(@RequestBody ExpoInput expo) {
+    public ResponseEntity addExpo(@RequestBody ExpoInput expo) {
         try {
             expoService.addExpo(expo);
+            return ResponseEntity.ok().build();
         } catch (AlreadyExistsException e) {
             System.out.println(e.getMessage());
+            return ResponseEntity.badRequest().build();
         }
     }
 
     @GetMapping("exposiciones/{numExpo}")
-    public ResponseEntity<ExpoOutPut> buscarExpo(@PathVariable int numExpo){
+    public ResponseEntity<Exposicion> buscarExpo(@PathVariable int numExpo){
         try {
-            ExpoOutPut expo = expoService.getExposicion(numExpo);
+            Exposicion expo = expoService.getExposicion(numExpo);
             return ResponseEntity.ok(expo);
         } catch (NumExpoNotExistsException e) {
             System.out.println(e.getMessage());
@@ -49,12 +54,13 @@ public class ExposicionesController {
     }
 
     @PutMapping("/exposiciones/{numExpo}")
-    public ResponseEntity<ExpoOutPut> updateExpo(@PathVariable int numExpo, @RequestBody ExpoUpdate expo) {
+    public ResponseEntity updateExpo(@PathVariable int numExpo, @RequestBody ExpoUpdate expo) {
         try {
-            return ResponseEntity.ok(expoService.updateExpo(numExpo, expo));
+            expoService.updateExpo(numExpo, expo);
+            return ResponseEntity.ok().build();
         } catch (CarNotExistsException | EmptyFieldException | WrongArgumentException e) {
             System.out.println(e.getMessage());
-            return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).build();
+            return ResponseEntity.badRequest().build();
         }
     }
 
@@ -62,18 +68,24 @@ public class ExposicionesController {
     public ResponseEntity<CarOutPut> cocheExpo(@PathVariable int numExpo, @PathVariable String matricula) {
         try {
             return ResponseEntity.ok(expoService.getCocheExpo(numExpo, matricula));
-        } catch (CarNotExistsException | NumExpoNotExistsException | WrongArgumentException | EmptyFieldException e) {
+        } catch (CarNotExistsException | WrongArgumentException | EmptyFieldException e) {
             System.out.println(e.getMessage());
             return ResponseEntity.notFound().build();
+        } catch (NumExpoNotExistsException e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
+
     @PostMapping("/exposiciones/{numExpo}/coches")
-    public void addCocheExpo(@PathVariable int numExpo, @RequestBody CarInput carInput){
+    public ResponseEntity addCocheExpo(@PathVariable int numExpo, @RequestBody CarInput carInput){
         try{
             expoService.addCocheExpo(numExpo, carInput);
+            return ResponseEntity.ok().build();
         }
         catch (NumExpoNotExistsException e) {
             System.out.println(e.getMessage());
+            return ResponseEntity.badRequest().build();
         }
     }
 }

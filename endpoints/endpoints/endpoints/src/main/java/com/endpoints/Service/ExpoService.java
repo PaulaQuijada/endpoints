@@ -1,6 +1,7 @@
 package com.endpoints.Service;
 
 import com.endpoints.Controller.*;
+import com.endpoints.Domain.Coche;
 import com.endpoints.Domain.Exposicion;
 import org.springframework.stereotype.Service;
 
@@ -16,22 +17,18 @@ public class ExpoService {
                 throw new AlreadyExistsException("La exposición ya existe");
             }
         }
-        Exposicion exposicion = new Exposicion(expo.getNumExpo(), "1");
+        Exposicion exposicion = new Exposicion(expo.getNumExpo(), expo.getName());
         exposiciones.add(exposicion);
     }
 
     public void addCocheExpo(int numExpo, CarInput carInput) throws NumExpoNotExistsException {
         for (Exposicion exposicion : exposiciones) {
             if (exposicion.getNumExpo() == numExpo) {
-                ArrayList<CarInput> cochesExpo = exposicion.getCochesExpo();
-                if(cochesExpo == null){
-                    cochesExpo= new ArrayList<>();
-                }
-                cochesExpo.add(carInput);
-                exposicion.setCochesExpo(cochesExpo);
-
+             exposicion.addCoche(new Coche(carInput.getMatricula(), carInput.getModelo()));
+                return;
             }
-        } throw new NumExpoNotExistsException("La exposición no existe");
+        }
+        throw new NumExpoNotExistsException("La exposición no existe");
     }
 
     public ArrayList<ExpoOutPut> getExpo() throws WrongArgumentException {
@@ -41,10 +38,10 @@ public class ExpoService {
         }
         return expos;
     }
-    public ExpoOutPut getExposicion(int numExpo) throws NumExpoNotExistsException, WrongArgumentException {
+    public Exposicion getExposicion(int numExpo) throws NumExpoNotExistsException, WrongArgumentException {
         for(Exposicion exposicion : exposiciones){
             if(exposicion.getNumExpo() == numExpo)
-                return new ExpoOutPut(numExpo);
+                return exposicion;
         }
         throw new NumExpoNotExistsException("La exposición no existe");
     }
@@ -52,7 +49,7 @@ public class ExpoService {
     public CarOutPut getCocheExpo(int numExpo, String matricula) throws NumExpoNotExistsException, CarNotExistsException, WrongArgumentException, EmptyFieldException {
         for (Exposicion exposicion : exposiciones) {
             if (exposicion.getNumExpo() == numExpo) {
-                for (CarInput coche : exposicion.getCochesExpo()) {
+                for (Coche coche : exposicion.getCochesExpo()) {
                     if (coche.getMatricula().equals(matricula)) {
                         return new CarOutPut(matricula, coche.getMarca());
                     }
@@ -63,15 +60,16 @@ public class ExpoService {
         throw new NumExpoNotExistsException("El número de exposición no existe");
     }
 
-    public ExpoOutPut updateExpo(int numExpo, ExpoUpdate expo) throws WrongArgumentException, EmptyFieldException, CarNotExistsException {
+
+    public void updateExpo(int numExpo, ExpoUpdate expo) throws WrongArgumentException, EmptyFieldException, CarNotExistsException {
         for (Exposicion exposicion : exposiciones) {
             if (exposicion.getNumExpo() == numExpo) {
-                if(expo.getName() != null){
                     exposicion.setNameExpo(expo.getName());
-                    return new ExpoOutPut(exposicion.getNumExpo(), expo.getName());
+                    break;
                 }
-            }
+            if(exposiciones.indexOf(exposicion)== exposiciones.size()-1) throw new CarNotExistsException("La exposición no existe");
+
         }
-        throw new CarNotExistsException("El coche no existe");
+
     }
 }

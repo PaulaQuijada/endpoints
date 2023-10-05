@@ -1,5 +1,6 @@
 package com.endpoints.Controller;
 
+import com.endpoints.Domain.Coche;
 import com.endpoints.Service.CarNotExistsException;
 import com.endpoints.Service.CarService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,7 @@ public class CochesController {
     private CarService carService;
 
     @GetMapping("/coches")
-    public ResponseEntity<ArrayList<CarOutPut>> getCars() {
+    public ResponseEntity<ArrayList<Coche>> getCars() {
         try {
             return ResponseEntity.ok(carService.getCars());
         } catch (WrongArgumentException | EmptyFieldException e) {
@@ -34,9 +35,10 @@ public class CochesController {
     }
 
     @PutMapping("/coches/{matricula}")
-    public ResponseEntity<CarOutPut> updateCar(@PathVariable String matricula, @RequestBody CarUpdate car) {
+    public ResponseEntity updateCar(@PathVariable String matricula, @RequestBody CarUpdate car) {
         try {
-            return ResponseEntity.ok(carService.updateCar(matricula, car));
+            carService.updateCar(matricula, car);
+            return ResponseEntity.ok().build();
         } catch (CarNotExistsException | EmptyFieldException | WrongArgumentException e) {
             System.out.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).build();
@@ -44,10 +46,10 @@ public class CochesController {
     }
 
     @GetMapping("/coches/{matricula}")
-    public ResponseEntity<String> buscarCoche(@PathVariable String matricula) {
+    public ResponseEntity<CarOutPutMatricula> buscarCoche(@PathVariable String matricula) {
         try {
-            CarOutPut coche = carService.getCoche(matricula);
-            return ResponseEntity.ok(coche.getMatricula());
+            CarOutPutMatricula coche = carService.getCoche(matricula);
+            return ResponseEntity.ok(coche);
         } catch (CarNotExistsException | WrongArgumentException | EmptyFieldException e) {
             System.out.println(e.getMessage());
             return ResponseEntity.notFound().build();
