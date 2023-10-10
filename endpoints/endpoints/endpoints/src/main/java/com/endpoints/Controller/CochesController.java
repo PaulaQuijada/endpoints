@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 @RestController
 public class CochesController {
@@ -16,13 +17,8 @@ public class CochesController {
     private CarService carService;
 
     @GetMapping("/coches")
-    public ResponseEntity<ArrayList<Coche>> getCars() {
-        try {
-            return ResponseEntity.ok(carService.getCars());
-        } catch (WrongArgumentException | EmptyFieldException e) {
-            System.out.println(e.getMessage());
-            return ResponseEntity.badRequest().build();
-        }
+    public ResponseEntity<HashMap<String, Coche>> getCars() {
+        return ResponseEntity.ok(carService.getCoches());
     }
 
     @PostMapping("/coches")

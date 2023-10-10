@@ -1,5 +1,7 @@
 package com.endpoints.Controller;
 
+import com.endpoints.Domain.Coche;
+
 public class CarOutPut {
     private String matricula;
     private String marca;
@@ -13,8 +15,9 @@ public class CarOutPut {
         if(marca == null || marca.trim().length() <1) throw new EmptyFieldException("La marca no puede estar vacía");
         this.marca = marca;
     }
-
-
+public static CarOutPut getCoche(Coche coche) throws WrongArgumentException, EmptyFieldException {
+        return new CarOutPut(coche.getMatricula(), coche.getMarca());
+}
     public String getMatricula() {
         return matricula;
     }

@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 @RestController
@@ -36,6 +37,8 @@ public class ExposicionesController {
         } catch (AlreadyExistsException e) {
             System.out.println(e.getMessage());
             return ResponseEntity.badRequest().build();
+        } catch (WrongArgumentException e) {
+            return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).build();
         }
     }
 
@@ -58,7 +61,7 @@ public class ExposicionesController {
         try {
             expoService.updateExpo(numExpo, expo);
             return ResponseEntity.ok().build();
-        } catch (CarNotExistsException | EmptyFieldException | WrongArgumentException e) {
+        } catch (EmptyFieldException | WrongArgumentException | NumExpoNotExistsException e) {
             System.out.println(e.getMessage());
             return ResponseEntity.badRequest().build();
         }
@@ -68,24 +71,20 @@ public class ExposicionesController {
     public ResponseEntity<CarOutPut> cocheExpo(@PathVariable int numExpo, @PathVariable String matricula) {
         try {
             return ResponseEntity.ok(expoService.getCocheExpo(numExpo, matricula));
-        } catch (CarNotExistsException | WrongArgumentException | EmptyFieldException e) {
+        } catch (CarNotExistsException | WrongArgumentException | EmptyFieldException | NumExpoNotExistsException e) {
             System.out.println(e.getMessage());
             return ResponseEntity.notFound().build();
-        } catch (NumExpoNotExistsException e) {
-            System.out.println(e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
-    @PostMapping("/exposiciones/{numExpo}/coches")
-    public ResponseEntity addCocheExpo(@PathVariable int numExpo, @RequestBody CarInput carInput){
+    @PostMapping("/exposiciones/{codExpo}/coches/{matricula}")
+    public void agregarCocheAExpo(@PathVariable int codExpo, @PathVariable String matricula){
         try{
-            expoService.addCocheExpo(numExpo, carInput);
-            return ResponseEntity.ok().build();
+            expoService.addCocheExpo(codExpo, matricula);
         }
-        catch (NumExpoNotExistsException e) {
+        catch (NumExpoNotExistsException | WrongArgumentException | EmptyFieldException |
+               CarNotExistsException e){
             System.out.println(e.getMessage());
-            return ResponseEntity.badRequest().build();
         }
     }
 }

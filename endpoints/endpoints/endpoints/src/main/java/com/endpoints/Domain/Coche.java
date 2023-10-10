@@ -1,6 +1,8 @@
 package com.endpoints.Domain;
 
 
+import com.endpoints.Controller.CarInput;
+
 public class Coche {
     private String matricula;
     private String marca;
@@ -18,10 +20,13 @@ public class Coche {
 
     public Coche(String matricula, String modelo) {
         this.matricula = matricula;
-        if (marca == null) this.marca = "no especificada";
         this.modelo = modelo;
+        this.marca = "C5";
+        this.year = 2000;
     }
-
+    public static Coche getCoche(CarInput carInput){
+        return new Coche(carInput.getMatricula(), carInput.getModelo(), "C5", 2000);
+    }
     public String getMatricula() {
         return matricula;
     }

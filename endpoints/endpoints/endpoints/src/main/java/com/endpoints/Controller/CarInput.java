@@ -1,7 +1,5 @@
 package com.endpoints.Controller;
 
-import com.endpoints.Domain.Coche;
-import org.springframework.lang.NonNull;
 
 public class CarInput {
     private String matricula;
@@ -20,7 +18,9 @@ public class CarInput {
             throw new EmptyFieldException("El modelo no puede estar vacío");
         this.modelo = modelo;
     }
-
+public static CarInput getCoche(){
+        return new CarInput();
+}
 
     public String getMatricula() {
         return matricula;
